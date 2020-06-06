@@ -1,7 +1,7 @@
 import socket
 import threading
 
-BIND_PORT = 7773
+BIND_PORT = 7772
 BIND_IP = "127.0.0.1"
 
 def handle_client(client_socket):
@@ -9,7 +9,7 @@ def handle_client(client_socket):
  
    print(f"[*] Received: {request}")
  
-   client_socket.send("<html><title>python simple server</title><body></body></html>".encode())
+   client_socket.send("PONG".encode())
    client_socket.close()
 
 def tcp_server():

@@ -64,7 +64,7 @@ def main():
             fn_item(a)
 
     if(listen == True):
-        netcat("ping")
+        print(netcat("ping"))
 
 def netcat(text_to_send):
     global port
@@ -84,4 +84,5 @@ def netcat(text_to_send):
          break
       rec_data.append(data)
 
+    return str(rec_data)
 main()
