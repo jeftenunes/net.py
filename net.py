@@ -24,23 +24,13 @@ def set_listen():
     global listen
     listen = True
 
+def set_port(port_arg):
+    global port
+    port = int(port_arg)
+
 def set_target(target_addr):
     global target
     target = target_addr
-
-def server_loop():
-    global target
-    if not len(target):
-        target = "0.0.0.0"
-
-    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind((target,port))
-    server.listen(5)
-
-    while True:
-        client_socket, addr = server.accept()
-    client_thread = threading.Thread(target=client_handler,args=(client_socket,))
-    client_thread.start()
 
 def main():
     global port
@@ -61,22 +51,37 @@ def main():
         usage()
 
     menu = {
+        "-p": set_port,
         "-l": set_listen,
         "-t": set_target
     }
 
     for opt, a in opts:
-        print(opt, a)
         fn_item = menu.get(opt, lambda: "Invalid option")
-        print(a != "")
         if(a == ""):
             fn_item()
         else:
             fn_item(a)
 
-    if not listen and len(target) and port > 0:
-        buffer = sys.stdin.read()
-        client_sender(buffer)
-    if listen:
-        server_loop()
+    if(listen == True):
+        netcat("ping")
+
+def netcat(text_to_send):
+    global port
+    global target
+
+    print("netcat target", target, sep=" ")
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((target, port))
+    s.sendall(text_to_send.encode())
+    s.shutdown(socket.SHUT_WR)
+
+    rec_data = []
+    while 1:
+      data = s.recv(1024)
+      if not data:
+         break
+      rec_data.append(data)
+
 main()
